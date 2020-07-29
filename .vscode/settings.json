@@ -1,0 +1,30 @@
+{
+    "terminal.integrated.shellArgs.windows": [
+        "-NoExit",
+        "/c",
+        "chcp.com 65001"
+    ],
+    "files.associations": {
+        "sstream": "cpp",
+        "regex": "cpp",
+        "iostream": "cpp",
+        "cmath": "cpp",
+        "iosfwd": "cpp",
+        "valarray": "cpp",
+        "complex": "cpp",
+        "type_traits": "cpp",
+        "random": "cpp",
+        "*.tcc": "cpp",
+        "string": "cpp",
+        "iterator": "c",
+        "cstdlib": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "forward_list": "cpp",
+        "new": "cpp"
+    },
+    "git.ignoreLimitWarning": true,
+}

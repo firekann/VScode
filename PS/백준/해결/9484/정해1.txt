@@ -1,0 +1,89 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll=long long;
+using pii=pair<int,int>;
+#define int ll
+
+struct dot{
+	int x,y,idx;
+	bool operator<(const dot &d) {
+		if(x!=d.x)return x<d.x;
+		return y<d.y;
+	}
+} dv[2010];
+//CCW
+inline int ccw(dot a,dot b,dot c){
+	return (b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);
+}
+//Area of Triangle
+inline int area(dot a,dot b,dot c){
+	return abs(ccw(a,b,c));
+}
+//Euclidean Distant (square)
+int edst(dot a,dot b){
+	return (a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y);
+}
+struct line{
+	int a,b;
+	int dx,dy;
+	bool operator<(const line &l) const {
+		if (dx*l.dy!=l.dx*dy)return dx*l.dy<l.dx*dy;
+		return edst(dv[a],dv[b])>edst(dv[l.a],dv[l.b]);
+	}
+} lv[4000010];
+int r[2010],vs[2010];
+
+int TC(){
+	stack<pii> st;
+	int n,idx=0;
+	scanf("%lld",&n);
+	if(!n)return 0;
+	int mx=0,mn=1e18;
+	for(int i=0; i < n; i++) {
+		scanf("%lld%lld",&dv[i].x,&dv[i].y);
+		r[i]=i;
+	}
+	sort(dv,dv+n);
+	for(int i=0;i<n;i++)dv[i].idx=i;
+	for(int i=0;i<n;i++){
+		for (int j=i+1;j<n;j++,idx++){
+			lv[idx].a=i; lv[idx].b=j;
+			if(dv[j]<dv[i])swap(lv[idx].a,lv[idx].b);
+			lv[idx].dx=dv[lv[idx].b].x-dv[lv[idx].a].x;
+			lv[idx].dy=dv[lv[idx].b].y-dv[lv[idx].a].y;
+		}
+	}
+	sort(lv,lv+idx);
+	for(int i=0;i<idx;i++) {
+		int a=lv[i].a,b=lv[i].b;
+		st.push(pii(a,b));
+		if(!vs[r[a]]&&!vs[r[b]]) {
+			vs[r[a]]=vs[r[b]]=1;
+			swap(dv[r[a]],dv[r[b]]);
+			swap(r[a],r[b]);
+		}
+		if(i+1<idx&&lv[i].dx*lv[i+1].dy==lv[i+1].dx*lv[i].dy)continue;
+		while(!st.empty()){
+			auto pp=st.top();st.pop();
+			int x,y;
+			tie(x,y)=pp;
+			x=r[x];y=r[y];
+			vs[x]=vs[y]=0;
+			if (x>y) swap(x,y);
+			if (x>0) {
+				mn=min(mn,area(dv[x],dv[y],dv[x-1]));
+				mx=max(mx,area(dv[x],dv[y],dv[0]));
+			}
+			if (y<n-1){
+				mn=min(mn,area(dv[x],dv[y],dv[y+1]));
+				mx=max(mx,area(dv[x],dv[y],dv[n-1]));
+			}
+		}
+	}
+	printf("%lld.%lld %lld.%lld\n",mn/2,(mn&1)*5,mx/2,(mx&1)*5);
+	return 1;
+}
+
+int32_t main(void){
+	while(TC());
+}

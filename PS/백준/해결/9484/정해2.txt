@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
+#include <cmath>
+#include <string>
+#include <cstring>
+
+#define sz(v) ((int)((v).size()))
+#define all(v) (v).begin(), (v).end()
+
+using namespace std;
+
+typedef long long ll;
+typedef pair<int,int> pii;
+
+const int INF = 0x3c3c3c3c;
+const ll LINF = 1ll*INF*INF*2;
+
+const int MAX_N = 2001;
+int n;
+pii p[MAX_N];
+
+typedef pair<double, pii> pp;
+vector<pp> v;
+
+double area(int x, int y, int z) {
+	return abs(p[x].first * p[y].second+
+	p[y].first * p[z].second+
+	p[z].first * p[x].second-
+	p[x].first * p[z].second-
+	p[y].first * p[x].second-
+	p[z].first * p[y].second)/2.0;
+}
+
+int ord[MAX_N];
+int loc[MAX_N];
+
+void proc() {
+	for(int i=0; i<n; i++) scanf("%d%d", &p[i].first, &p[i].second);
+	sort(p, p+n);
+
+	for(int i=0; i<n; i++) ord[i] = i;
+	for(int i=0; i<n; i++) loc[i] = i;
+
+	v.clear();
+	for(int i=0; i<n; i++)
+		for(int j=i+1; j<n; j++) {
+			if(p[i].first == p[j].first) v.push_back(make_pair(INF, make_pair(i,j)));
+		//	if(p[j].second > p[i].second) continue;
+			else v.push_back(make_pair(1.0*(p[j].second-p[i].second)/(p[j].first-p[i].first), make_pair(i, j)));
+		}
+	sort(all(v));
+
+	double mans = 300000000;
+	double Mans = 0;
+	for(int i=0; i<sz(v); i++) {
+		pp temp = v[i];
+		int x=v[i].second.first;
+		int y=v[i].second.second;
+		int lx=loc[x];
+		int ly=loc[y];
+		if(lx>ly) continue;
+		swap(ord[lx], ord[ly]);
+		swap(loc[x], loc[y]);
+
+		int k=0;
+		while(ord[k]==x || ord[k]==y) k++;
+		Mans = max(area(x, y, ord[k]), Mans);
+		k=n-1;
+		while(ord[k]==x || ord[k]==y) k--;
+		Mans = max(area(x, y, ord[k]), Mans);
+
+		if(lx>0) mans = min(area(ord[lx-1], x, y), mans);
+		if(ly<n-2) mans = min(area(ord[ly+1], x, y), mans);
+	}
+
+	printf("%.1lf %.1lf\n", mans, Mans);
+}
+
+int main(void) {
+	while(true) {
+		scanf("%d", &n);
+		if(!n) break;
+		proc();
+	}
+}
