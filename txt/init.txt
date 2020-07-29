@@ -2,7 +2,7 @@
 #pragma GCC optimize("Ofast")
 #pragma GCC optimize ("unroll-loops")
 #include <bits/stdc++.h>
-#define fastio ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+#define fastio ios::sync_with_stdio(false); cin.tie(nullptr);
 #define X first
 #define Y second
 #define pb push_back
