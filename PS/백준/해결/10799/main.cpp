@@ -18,5 +18,17 @@ const int dy[] = { 0, 1, 0, -1, 1, 1, -1, -1 };
 
 int main(){
     fastio
-    
+    string s;
+    cin>>s;
+    int cnt=1;
+    int ans=0;
+    for(int i=1; i<sz(s); i++){
+        if(s[i]=='(') cnt++;
+        else{
+            cnt--;
+            if(s[i-1]=='(') ans+=cnt;
+            else ans++;
+        }
+    }
+    cout<<ans;
 }

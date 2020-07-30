@@ -2,11 +2,14 @@
 #pragma GCC optimize("Ofast")
 #pragma GCC optimize ("unroll-loops")
 #include <bits/stdc++.h>
+#define fastio ios::sync_with_stdio(false); cin.tie(nullptr);
 #define X first
 #define Y second
+#define pb push_back
 #define sz(x) (int)x.size()
 #define all(x) x.begin(), x.end()
-#define fastio ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+#define pii pair<int, int>
+#define pll pair<ll, ll>
 
 using namespace std;
 typedef long long ll;
