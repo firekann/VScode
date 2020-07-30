@@ -1,7 +1,7 @@
 void ltrim(string &s){s.erase(s.begin(), find_if(all(s), [](int ch){return !isspace(ch);}));}
 void rtrim(string &s){s.erase(find_if(s.rbegin(), s.rend(), [](int ch){return !isspace(ch);}).base(), s.end());}
 void trim(string &s){rtrim(s),ltrim(s);}
-void tolowwercase(string &s){transform(s.begin(), s.end(), s.begin(),[](unsigned char c){ return std::tolower(c);});}
-void touppercase(string &s){transform(s.begin(), s.end(), s.begin(),[](unsigned char c){ return std::toupper(c);});}
+void tolowwercase(string &s){transform(s.begin(), s.end(), s.begin(),[](unsigned char c){return tolower(c);});}
+void touppercase(string &s){transform(s.begin(), s.end(), s.begin(),[](unsigned char c){return toupper(c);});}
 void removechar(string &s, char c){s.erase(remove(all(s), c), s.end());}
 void replace(string &s, char a, char b){for(auto &i:s)i=i==a?b:i;}
