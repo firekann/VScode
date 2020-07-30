@@ -16,30 +16,25 @@ typedef long long ll;
 const int dx[] = { -1, 0, 1, 0, -1, 1, 1, -1 };
 const int dy[] = { 0, 1, 0, -1, 1, 1, -1, -1 };
 
-vector<int> v;
-int n;
-int minv=1e9, maxv=-1e9;
-
-void dfs(int a, int b, int idx, int vmax){
-    if(idx>=vmax) return;
-    if(a>=n){
-        if(a==n) minv=min(minv, b), maxv=max(maxv, b);
-        return;
-    }
-    for(int i=0; i<=n/v[idx]; i++){
-        dfs(a+v[idx]*i, b+v[idx-1]*i, idx+1, vmax);
-    }
+int solution(vector<vector<int>> board, vector<int> moves) {
+    int answer = 0;
+    
+    return answer;
 }
 
 int main(){
     fastio
+    int n;
     cin>>n;
-    v.pb(1);
-    v.pb(2);
-    for(int i=2; 1; i++){
-        v.pb(v[i-2]+v[i-1]);
-        if(v[i]>=n) break;
+    vector<vector<int>> vv;
+    vv.resize(n);
+    for(auto &i:vv){
+        i.resize(n);
+        for(auto &j:i) cin>>j;
     }
-    dfs(0, 0, 1, sz(v));
-    cout<<minv<<" "<<maxv;
+    int m;
+    cin>>m;
+    vector<int> v(m);
+    for(auto &i:v) cin>>i;
+    cout<<solution(vv, v);
 }

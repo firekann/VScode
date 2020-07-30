@@ -10,7 +10,6 @@
 #define all(x) x.begin(), x.end()
 #define pii pair<int, int>
 #define pll pair<ll, ll>
-#define mid ((l+r)>>1)
 
 using namespace std;
 typedef long long ll;
@@ -19,5 +18,13 @@ const int dy[] = { 0, 1, 0, -1, 1, 1, -1, -1 };
 
 int main(){
     fastio
-    
+    vector<int> v;
+    int n;
+    int minv, maxv;
+    cin>>n;
+    if(n%2) minv=(n+1)/2;
+    else minv=n/2;
+    if(n%3==2) maxv=2*(n/3)+1;
+    else maxv=2*(n/3);
+    cout<<minv<<" "<<maxv;
 }
