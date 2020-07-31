@@ -19,23 +19,28 @@ const int dy[] = { 0, 1, 0, -1, 1, 1, -1, -1 };
 
 int main(){
     fastio
-    int n;
-    cin>>n;
-    map<int, int> mp;
-    n--;
-    int tmp;
-    ll cnt=0;
-    cin>>tmp;
-    mp[tmp]=1;
-    cout<<"0\n";
-    for(;n--;){
-        cin>>tmp;
-        auto dp=mp.upper_bound(tmp);
-        int curdp=0;
-        if(dp!=mp.end()) curdp=dp->Y;
-        if(dp!=mp.begin()) curdp=max(curdp, (--dp)->Y);
-        mp[tmp]=curdp+1;
-        cnt+=curdp;
-        cout<<cnt<<"\n";
+    int T;
+    cin>>T;
+    for(;T--;){
+        int a, b, c, d;
+        cin>>a>>b;
+        if(a==1){
+
+        }
+        else if(a==2){
+            cin>>c>>d;
+
+        }
+        else if(a==3){
+            
+        }
+        else if(a==4){
+            cin>>c>>d;
+            
+        }
+        else{
+            cin>>c>>d;
+            
+        }
     }
 }
