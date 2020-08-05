@@ -1,9 +1,7 @@
-# VScode
+# PS용으로 만든 레포입니다.
 
-## PS용으로 만든 레포입니다.
+## boj
 
-### boj
+## codeup
 
-### codeup
-
-### leetcode
+## leetcode
