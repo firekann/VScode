@@ -17,16 +17,15 @@
 
 using namespace std;
 typedef long long ll;
-const int dx[] = {-1, 0, 1, 0, -1, 1, 1, -1};
-const int dy[] = {0, 1, 0, -1, 1, 1, -1, -1};
+const int dx[] = { -1, 0, 1, 0, -1, 1, 1, -1 };
+const int dy[] = { 0, 1, 0, -1, 1, 1, -1, -1 };
 
 typedef complex<double> cpx;
 
-void fft(vector<cpx> &a, bool ck)
+void fft(vector<cpx>& a, bool ck)
 {
     int n = sz(a);
-    for (int i = 1, j = 0; i < n; i++)
-    {
+    for (int i = 1, j = 0; i < n; i++) {
         int bit = n / 2;
         for (; bit <= j; bit /= 2)
             j -= bit;
@@ -34,17 +33,14 @@ void fft(vector<cpx> &a, bool ck)
         if (i < j)
             swap(a[i], a[j]);
     }
-    for (int len = 2; len <= n; len *= 2)
-    {
+    for (int len = 2; len <= n; len *= 2) {
         double ang = 2 * M_PI / len;
         if (ck)
             ang = -ang;
         cpx w(cos(ang), sin(ang));
-        for (int i = 0; i < n; i += len)
-        {
+        for (int i = 0; i < n; i += len) {
             cpx wp(1, 0);
-            for (int j = 0; j < len / 2; j++)
-            {
+            for (int j = 0; j < len / 2; j++) {
                 cpx u = a[i + j], v = a[i + j + len / 2] * wp;
                 a[i + j] = u + v;
                 a[i + j + len / 2] = u - v;
@@ -57,7 +53,7 @@ void fft(vector<cpx> &a, bool ck)
             a[i] /= n;
 }
 
-vector<int> mul(vector<int> &a, vector<int> &b)
+vector<int> mul(vector<int>& a, vector<int>& b)
 {
     vector<cpx> aa(all(a)), bb(all(b));
     int n = 1;
@@ -90,8 +86,7 @@ int main()
         a[i] = (tmp[sa[i]] + 1) % 3;
     for (int i = 0; i < m; i++)
         b[i] = tmp[sb[i]];
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         vector<int> u(n + m), v(m);
         for (int j = 0; j < n; j++)
             u[j] = a[j] == i;
