@@ -17,8 +17,8 @@
 
 using namespace std;
 typedef long long ll;
-const int dx[] = {-1, 0, 1, 0, -1, 1, 1, -1};
-const int dy[] = {0, 1, 0, -1, 1, 1, -1, -1};
+const int dx[] = { -1, 0, 1, 0, -1, 1, 1, -1 };
+const int dy[] = { 0, 1, 0, -1, 1, 1, -1, -1 };
 
 int main()
 {
@@ -26,10 +26,8 @@ int main()
     ll n, k;
     cin >> n >> k;
     string s = to_string(n);
-    for (int i = 1; n <= (ll)1e9; i++)
-    {
-        if (n % k == 0)
-        {
+    for (int i = 1; n <= (ll)1e9; i++) {
+        if (n % k == 0) {
             cout << i;
             return 0;
         }
