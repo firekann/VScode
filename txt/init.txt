@@ -1,6 +1,7 @@
 #pragma GCC optimize("O3")
 #pragma GCC optimize("Ofast")
 #pragma GCC optimize ("unroll-loops")
+#define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
 #define fastio ios::sync_with_stdio(false); cin.tie(nullptr)
 #define X first
