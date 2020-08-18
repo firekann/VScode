@@ -5,3 +5,4 @@ void tolowwercase(string &s){transform(s.begin(), s.end(), s.begin(), [](unsigne
 void touppercase(string &s){transform(s.begin(), s.end(), s.begin(), [](unsigned char c){return toupper(c);});}
 void removechar(string &s, char c){s.erase(remove(s.begin(), s.end(), c), s.end());}
 void replace(string &s, char a, char b){for(auto &i:s)i=i==a?b:i;}
+vector<string> split(string s, char k){vector<string> rec;string ts;for(auto itr:s){if(itr==k){rec.pb(ts);ts="";}else{ts += itr;}}return rec;}
