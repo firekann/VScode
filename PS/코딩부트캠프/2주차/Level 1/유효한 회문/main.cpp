@@ -20,40 +20,25 @@ typedef long long ll;
 const int dx[] = { -1, 0, 1, 0, -1, 1, 1, -1 };
 const int dy[] = { 0, 1, 0, -1, 1, 1, -1, -1 };
 
-bool solution(string s)
+string s;
+
+bool solve(int l, int r, bool ck)
 {
-    int l = 0, r = sz(s) - 1;
-    bool ck = false, flag = true;
-    while (l < r) {
-        if (s[l] == s[r]) {
-            l++, r--;
-            continue;
-        } else {
-            if (r - l < 2) {
-                break;
-            } else if (ck) {
-                flag = false;
-                break;
-            } else if (s[l] == s[r - 1] && (l + 1 <= r - 2) ? true : (s[l + 1] == s[r - 2])) {
-                ck = true;
-                l++;
-                r -= 2;
-                continue;
-            } else if (s[l + 1] == s[r] && (l + 2 <= r - 1) ? true : (s[l + 2] == s[r - 1])) {
-                ck = true;
-                l += 2;
-                r--;
-                continue;
-            } else {
-                flag = false;
-                break;
-            }
-        }
-    }
-    if (flag)
+    if (l > r)
         return true;
+    if (s[l] == s[r])
+        return solve(l + 1, r - 1, ck);
+    else if (ck)
+        return max(solve(l + 1, r, false), solve(l, r - 1, false));
     else
         return false;
+}
+
+bool solution(string ss)
+{
+    s = ss;
+    int l = 0, r = sz(s) - 1;
+    return solve(l, r, true);
 }
 
 int main()
