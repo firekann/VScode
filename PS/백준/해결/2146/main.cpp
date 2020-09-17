@@ -22,20 +22,24 @@ const int dy[] = { 0, 1, 0, -1, 1, 1, -1, -1 };
 
 int n;
 vector<vector<int>> v;
-vector<vector<bool>> visit;
 
 void dfs(int x, int y, vector<pair<int, int>>& pos)
 {
-    if (v[x][y] == 0)
+    if (v[x][y] == 0 || v[x][y] == -1)
         return;
-    v[x][y] = 0;
-    pos.pb({ x, y });
+    v[x][y] = -1;
+    bool flag = false;
     for (int i = 0; i < 4; i++) {
         int tx = x + dx[i];
         int ty = y + dy[i];
-        if (tx >= 0 && tx < n && ty >= 0 && ty < n)
+        if (tx >= 0 && tx < n && ty >= 0 && ty < n) {
             dfs(tx, ty, pos);
+            if (v[tx][ty] == 0)
+                flag = true;
+        }
     }
+    if (flag)
+        pos.pb({ x, y });
     return;
 }
 
@@ -75,14 +79,13 @@ int main()
     fastio;
     cin >> n;
     v.resize(n, vector<int>(n));
-    visit.resize(n, vector<bool>(n, false));
     for (auto& i : v)
         for (auto& j : i)
             cin >> j;
     int ans = 1e9;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            if (v[i][j] == 0)
+            if (v[i][j] == 0 || v[i][j] == -1)
                 continue;
             vector<pair<int, int>> pos;
             dfs(i, j, pos);
