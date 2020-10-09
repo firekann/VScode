@@ -1,9 +1,9 @@
-void ltrim(string &s){s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch){return !isspace(ch);}));}
-void rtrim(string &s){s.erase(find_if(s.rbegin(), s.rend(), [](int ch){return !isspace(ch);}).base(), s.end());}
-void trim(string &s){rtrim(s), ltrim(s);}
-void tolowwercase(string &s){transform(s.begin(), s.end(), s.begin(), [](unsigned char c){return tolower(c);});}
-void touppercase(string &s){transform(s.begin(), s.end(), s.begin(), [](unsigned char c){return toupper(c);});}
-void removechar(string &s, char c){s.erase(remove(s.begin(), s.end(), c), s.end());}
-void replace(string &s, char a, char b){for(auto &i:s)i=i==a?b:i;}
-vector<string> split(string s, char k){vector<string> rec;string ts;for(auto itr:s){if(itr==k){rec.pb(ts);ts="";}else{ts+=itr;}}if(sz(ts)){rec.pb(ts);}return rec;}
-vector<string> split(string s, string k){vector<string> rec;string ts;for(auto itr:s){bool flag=false;for(auto i:k){if(i==itr){flag=true;break;}}if(flag){rec.pb(ts);ts="";}else{ts+=itr;}}if(sz(ts)){rec.pb(ts);}return rec;}
+std::string ltrim(std::string s){s.erase(s.begin(),find_if(s.begin(),s.end(),[](int ch){return !isspace(ch);}));return s;}
+std::string rtrim(std::string s){s.erase(find_if(s.rbegin(),s.rend(),[](int ch){return !isspace(ch);}).base(),s.end());return s;}
+std::string trim(std::string s){s=rtrim(s);s=ltrim(s);return s;}
+std::string tolowwercase(std::string s){transform(s.begin(),s.end(),s.begin(),[](unsigned char c){return tolower(c);});return s;}
+std::string touppercase(std::string s){transform(s.begin(),s.end(),s.begin(),[](unsigned char c){return toupper(c);});return s;}
+std::string removechar(std::string s, std::string rs){for(auto c:rs){s.erase(remove(s.begin(),s.end(),c),s.end());}return s;}
+std::string replace(std::string s, std::string a, char b){for(auto& i:s){for(auto itr:a){i=i==itr?b:i;}}return s;}
+std::vector<std::string> split(std::string s, char k){std::vector<std::string> rec;std::string ts="";for(auto itr:s){if(itr==k){if(ts.size()){rec.push_back(ts);}ts="";}else{ts+=itr;}}if(ts.size()){rec.push_back(ts);}return rec;}
+std::vector<std::string> split(std::string s, std::string k){std::vector<std::string> rec;std::string ts="";for(auto itr:s){bool flag=false;for(auto i:k){if(i==itr){flag=true;break;}}if(flag){if(ts.size()){rec.push_back(ts);}ts="";}else{ts+=itr;}}if(ts.size()){rec.push_back(ts);}return rec;}
