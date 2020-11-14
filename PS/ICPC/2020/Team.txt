@@ -3,5 +3,7 @@ Decentralization
 
 팀원(Team member) : In Seo Park (wb092311@naver.com), Jaemin Han (byeop24@gmail.com), Homin Lee (leehomin118@gmail.com)
 
-result:
+result :
 2020 Asia Seoul National First Round Programming Contest : 4ac(E, F, I, K) 1wa(L)
+
+팀노트 : DeobureoMinkyuParty
