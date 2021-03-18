@@ -14,8 +14,8 @@
 #define mid ((l+r)>>1)
 #define INPUT_FILE "input.txt"
 #define OUTPUT_FILE "output.txt"
-//ifstream input(INPUT_FILE);
-//ofstream output(OUTPUT_FILE);
+//ifstream in(INPUT_FILE);
+//ofstream out(OUTPUT_FILE);
 
 using namespace std;
 typedef long long ll;
