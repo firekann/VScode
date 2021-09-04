@@ -100,7 +100,7 @@ inf_int::inf_int(long long n)
     }
     int i = 0;
     while (n > 0) {
-        buf += std::to_string(n % 10);
+        buf += ((n % 10) + '0');
         n /= 10;
         i++;
     }
@@ -179,8 +179,8 @@ std::pair<inf_int, inf_int> divmod(const inf_int& a, const inf_int& b)
     inf_int absb = abs(b);
     long long n = a.length - b.length;
     for (long long i = n; i >= 0; i--) {
+        long long powv = pow(10, i);
         for (;;) {
-            long long powv = pow(10, i);
             inf_int tmp = absb * powv;
             if (remainder >= tmp) {
                 quotient += powv;
@@ -263,11 +263,11 @@ inf_int operator+(const inf_int& a, const inf_int& b)
         int carry = 0, num;
         for (int i = 0; i < (int)sa.length(); i++) {
             num = (sa[i] - '0' + sb[i] - '0' + carry);
-            result += std::to_string(num % 10);
+            result += ((num % 10) + '0');
             carry = num / 10;
         }
         if (carry) {
-            result += std::to_string(carry);
+            result += (carry + '0');
         }
         reverse(result.begin(), result.end());
         return inf_int(result);
@@ -388,7 +388,7 @@ inf_int operator*(const inf_int& a, const inf_int& b)
             return 0;
         } else {
             for (; i >= 0; i--) {
-                ans += std::to_string(r[i]);
+                ans += (r[i] + '0');
             }
         }
         return inf_int(ans);
