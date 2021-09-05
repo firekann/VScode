@@ -216,7 +216,7 @@ std::pair<inf_int, inf_int> divmod(const inf_int& a, const inf_int& b)
         return { -quotient, -remainder };
     return { quotient, remainder };
 }
-inf_int& inf_int::operator=(const inf_int& a)
+inf_float& inf_float::operator=(const inf_float& a)
 {
     if (this->digits.length()) {
         this->digits = "";
@@ -224,25 +224,26 @@ inf_int& inf_int::operator=(const inf_int& a)
     this->digits = a.digits;
     this->length = a.length;
     this->thesign = a.thesign;
+    this->precision_position = a.precision_position;
     return *this;
 }
-bool operator==(const inf_int& a, const inf_int& b)
+bool operator==(const inf_float& a, const inf_float& b)
 {
-    if (a.digits == b.digits && a.thesign == b.thesign) {
+    if (a.digits == b.digits && a.thesign == b.thesign && a.precision_position == b.precision_position) {
         return true;
     }
     return false;
 }
-bool operator!=(const inf_int& a, const inf_int& b) { return !(a == b); }
-bool operator>(const inf_int& a, const inf_int& b)
+bool operator!=(const inf_float& a, const inf_float& b) { return !(a == b); }
+bool operator>(const inf_float& a, const inf_float& b)
 {
     if (a == b) {
         return false;
     }
     bool abs = false;
-    if (a.length > b.length) {
+    if (a.length - a.precision_position > b.length - b.precision_position) {
         abs = true;
-    } else if (a.length == b.length) {
+    } else if (a.length - a.precision_position == b.length - a.precision_position) {
         int i = a.length;
         while (i--) {
             int tmp = a.digits[i] - b.digits[i];
@@ -259,9 +260,9 @@ bool operator>(const inf_int& a, const inf_int& b)
     }
     return a.thesign ? abs : !abs;
 }
-bool operator<(const inf_int& a, const inf_int& b) { return ((a > b) || (a == b)) ? false : true; }
-bool operator>=(const inf_int& a, const inf_int& b) { return (a > b) || (a == b); }
-bool operator<=(const inf_int& a, const inf_int& b) { return (a < b) || (a == b); }
+bool operator<(const inf_float& a, const inf_float& b) { return ((a > b) || (a == b)) ? false : true; }
+bool operator>=(const inf_float& a, const inf_float& b) { return (a > b) || (a == b); }
+bool operator<=(const inf_float& a, const inf_float& b) { return (a < b) || (a == b); }
 inf_int operator+(const inf_int& a, const inf_int& b)
 {
     if (a.thesign != b.thesign && abs(a) == abs(b)) {
@@ -494,20 +495,27 @@ inf_int& operator<<=(inf_int& a, const inf_int& b)
     return a;
 }
 inf_int abs(const inf_int& a) { return +a; }
-std::ostream& operator<<(std::ostream& out, const inf_int& a)
+std::ostream& operator<<(std::ostream& out, const inf_float& a)
 {
     if (a.thesign == false) {
         out << '-';
     }
     for (int i = a.length - 1; i >= 0; i--) {
-        out << a.digits[i];
+        if (i == a.precision_position) {
+            out << ".";
+            if (i == 0) {
+                out << "0";
+            }
+        } else {
+            out << a.digits[i];
+        }
     }
     return out;
 }
-std::istream& operator>>(std::istream& in, inf_int& a)
+std::istream& operator>>(std::istream& in, inf_float& a)
 {
     std::string s;
     in >> s;
-    a = inf_int(s);
+    a = inf_float(s);
     return in;
 }
