@@ -29,6 +29,19 @@ private:
     std::string digits;
     unsigned int length;
     bool thesign;
+    void ltrim(std::string& s)
+    {
+        s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) { return (ch == '0' ? false : true); }));
+    }
+    void rtrim(std::string& s)
+    {
+        s.erase(find_if(s.rbegin(), s.rend(), [](int ch) { return (ch == '0' ? false : true); }).base(), s.end());
+    }
+    void trim(std::string& s)
+    {
+        rtrim(s);
+        ltrim(s);
+    }
 
 public:
     inf_int();
@@ -89,28 +102,7 @@ inf_int::inf_int()
     this->thesign = true;
 }
 inf_int::inf_int(int n) { new (this) inf_int((long long)n); }
-inf_int::inf_int(long long n)
-{
-    std::string buf = "";
-    if (n < 0) {
-        this->thesign = false;
-        n = -n;
-    } else {
-        this->thesign = true;
-    }
-    int i = 0;
-    while (n > 0) {
-        buf += ((n % 10) + '0');
-        n /= 10;
-        i++;
-    }
-    if (i == 0) {
-        new (this) inf_int();
-    } else {
-        this->length = i;
-        this->digits = buf;
-    }
-}
+inf_int::inf_int(long long n) { new (this) inf_int(std::to_string(n)); }
 inf_int::inf_int(const char* str) { new (this) inf_int(std::string(str)); }
 inf_int::inf_int(std::string str)
 {
@@ -120,11 +112,17 @@ inf_int::inf_int(std::string str)
     } else {
         thesign = true;
     }
-    std::reverse(str.begin(), str.end());
-    length = (int)str.length();
-    digits = str;
-    if (digits == "0" && length == 1) {
-        thesign = true;
+    ltrim(str);
+    unsigned int len = (unsigned int)str.size();
+    if (len == 0) {
+        new (this) inf_int();
+    } else {
+        std::reverse(str.begin(), str.end());
+        this->length = len;
+        this->digits = str;
+        if (this->digits == "0" && this->length == 1) {
+            this->thesign = true;
+        }
     }
 }
 inf_int::inf_int(const inf_int& a)
