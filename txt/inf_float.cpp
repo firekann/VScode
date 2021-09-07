@@ -30,6 +30,7 @@ private:
     unsigned int length;
     unsigned int precision_position;
     bool thesign;
+    unsigned int output_precision_length;
 
 public:
     inf_float();
@@ -78,7 +79,9 @@ int main()
     fastio;
     inf_float a, b;
     cin >> a >> b;
+    cout << a << " , " << b << "\n";
     cout << a + b << "\n";
+    cout << (a * b).getstr() << "\n";
     cout << a * b << "\n";
 }
 
@@ -120,7 +123,7 @@ inf_float::inf_float(std::string str)
     } else {
         this->thesign = true;
     }
-    ltrim(str); // 왼쪽 부분을 trim해서 불필요한 0을 제거해줌
+    trim(str);
     std::string buf = "";
     unsigned int str_len = (unsigned int)str.length(), pos = -1;
     for (int i = str_len - 1; i >= 0; i--) {
@@ -134,12 +137,12 @@ inf_float::inf_float(std::string str)
     } else if (this->digits == "0" && this->length == 1) {
         this->thesign = true;
     } else {
+        rtrim(buf);
         this->digits = buf;
-        if (pos == -1) { // 소수점이 존재하지 않으면 digit len이 1 줄어들지 않고 precision_position이 0이 됨
-            this->length = str_len;
+        this->length = (unsigned int)buf.length();
+        if (pos == -1) {
             this->precision_position = 0;
         } else {
-            this->length = str_len - 1;
             this->precision_position = str_len - pos - 1;
         }
     }
@@ -266,14 +269,13 @@ inf_float operator+(const inf_float& a, const inf_float& b)
         if (carry) {
             result += (carry + '0');
         }
-        reverse(result.begin(), result.end());
-        int len = (int)result.length();
+        inf_float res;
         rtrim(result);
-        inf_float res(result);
-        res.length = (unsigned int)result.length();
-        res.precision_position = max_precision_position - (len - res.length);
+        int len = (int)result.length();
         ltrim(result);
         res.length = (unsigned int)result.length();
+        res.precision_position = max_precision_position - (len - res.length);
+        res.digits = result;
         return res;
     } else if (a.thesign == false && b.thesign == false) {
         return -(abs(a) + abs(b));
@@ -351,22 +353,11 @@ inf_float operator*(const inf_float& a, const inf_float& b)
     } else if (a.thesign == false && b.thesign == false) {
         return abs(a) * abs(b);
     } else {
-        std::string sa = a.digits;
-        std::string sb = b.digits;
-        if (a.precision_position < b.precision_position) {
-            for (int i = 0; i < b.precision_position - a.precision_position; i++) {
-                sa = '0' + sa;
-            }
-        } else {
-            for (int i = 0; i < a.precision_position - b.precision_position; i++) {
-                sb = '0' + sb;
-            }
-        }
         std::vector<std::complex<double>> A, B, C;
-        for (auto i : sa) {
+        for (auto i : a.digits) {
             A.push_back(std::complex<double>(i - '0', 0));
         }
-        for (auto i : sb) {
+        for (auto i : b.digits) {
             B.push_back(std::complex<double>(i - '0', 0));
         }
         int num = 1;
@@ -408,6 +399,7 @@ inf_float operator*(const inf_float& a, const inf_float& b)
                 result += (r[i] + '0');
             }
         }
+        ltrim(result);
         int len = (int)result.length();
         rtrim(result);
         inf_float res(result);
