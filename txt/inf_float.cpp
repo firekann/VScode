@@ -30,7 +30,7 @@ private:
     unsigned int length;
     unsigned int precision_position;
     bool thesign;
-    unsigned int output_precision_length;
+    int output_precision_length;
 
 public:
     inf_float();
@@ -47,6 +47,7 @@ public:
     friend void rtrim(std::string& s);
     friend void trim(std::string& s);
     string getstr();
+    void set_output_precision_length(int n);
     inf_float& operator=(const inf_float&);
     friend void FFT(std::vector<std::complex<double>>&, bool);
     friend bool operator==(const inf_float&, const inf_float&);
@@ -77,12 +78,15 @@ public:
 int main()
 {
     fastio;
-    inf_float a, b;
-    cin >> a >> b;
-    cout << a << " , " << b << "\n";
-    cout << a + b << "\n";
-    cout << (a * b).getstr() << "\n";
-    cout << a * b << "\n";
+    int n;
+    cin >> n;
+    for (; n--;) {
+        inf_float a, b;
+        cin >> a >> b;
+        inf_float c = a * b;
+        c.set_output_precision_length(18);
+        cout << c << "\n";
+    }
 }
 
 void ltrim(std::string& s)
@@ -102,12 +106,17 @@ string inf_float::getstr()
 {
     return this->digits;
 }
+void inf_float::set_output_precision_length(int n)
+{
+    this->output_precision_length = n;
+}
 inf_float::inf_float()
 {
     this->digits = "0";
     this->length = 1;
     this->precision_position = 0;
     this->thesign = true;
+    this->output_precision_length = -1;
 }
 inf_float::inf_float(int n) { new (this) inf_float(to_string(n)); }
 inf_float::inf_float(long long n) { new (this) inf_float(to_string(n)); }
@@ -117,6 +126,7 @@ inf_float::inf_float(long double n) { new (this) inf_float(to_string(n)); }
 inf_float::inf_float(const char* str) { new (this) inf_float(std::string(str)); }
 inf_float::inf_float(std::string str)
 {
+    this->output_precision_length = -1;
     if (str[0] == '-') {
         this->thesign = false;
         str.erase(str.begin());
@@ -153,6 +163,7 @@ inf_float::inf_float(const inf_float& a)
     this->length = a.length;
     this->thesign = a.thesign;
     this->precision_position = a.precision_position;
+    this->output_precision_length = -1;
 }
 inf_float::~inf_float() { }
 void FFT(std::vector<std::complex<double>>& f, bool inv = false)
@@ -499,19 +510,35 @@ std::ostream& operator<<(std::ostream& out, const inf_float& a)
     if (a.thesign == false) {
         out << '-';
     }
+    bool is_precision = false;
+    int cnt = 0;
     if (a.length <= a.precision_position) {
+        is_precision = true;
         out << "0.";
         for (int i = 0; i < a.precision_position - a.length; i++) {
             out << '0';
+            cnt++;
         }
     }
     for (int i = a.length - 1; i >= 0; i--) {
+        if (cnt == a.output_precision_length) {
+            break;
+        }
+        if (is_precision) {
+            cnt++;
+        }
         out << a.digits[i];
         if (i == a.precision_position) {
+            is_precision = true;
             out << ".";
             if (i == 0) {
                 out << "0";
             }
+        }
+    }
+    if (a.output_precision_length != -1 && a.precision_position < a.output_precision_length) {
+        for (int i = 0; i < a.output_precision_length - (a.precision_position == 0 ? 1 : a.precision_position); i++) {
+            out << '0';
         }
     }
     return out;
