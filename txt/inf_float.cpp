@@ -46,7 +46,6 @@ public:
     friend void ltrim(std::string&);
     friend void rtrim(std::string&);
     friend void trim(std::string&);
-    string getstr();
     void set_output_precision_length(int n);
     inf_float& operator=(const inf_float&);
     friend void FFT(std::vector<std::complex<double>>&, bool);
@@ -84,9 +83,9 @@ int main()
     fastio;
     inf_float a, b;
     cin >> a >> b;
-    inf_float c = a + b;
-    cout << c << "\n";
-    cout << c.getstr() << "\n";
+    inf_float c = a * b;
+    c.set_output_precision_length(0);
+    cout << c;
 }
 
 void ltrim(std::string& s)
@@ -101,10 +100,6 @@ void trim(std::string& s)
 {
     rtrim(s);
     ltrim(s);
-}
-string inf_float::getstr()
-{
-    return this->digits;
 }
 void inf_float::set_output_precision_length(int n)
 {
@@ -302,7 +297,7 @@ inf_float operator+(const inf_float& a, const inf_float& b)
             if (pos == -1) {
                 pos = max_precision_position;
             }
-            result = result.substr(pos, string::npos);
+            result = result.substr(pos);
             res.length = (unsigned int)result.length();
             res.precision_position = max_precision_position - (len - res.length);
             res.digits = result;
@@ -435,15 +430,32 @@ inf_float operator*(const inf_float& a, const inf_float& b)
                 result += (r[i] + '0');
             }
         }
-        ltrim(result);
-        int len = (int)result.length();
-        rtrim(result);
-        inf_float res(result);
-        res.length = (unsigned int)result.length();
-        res.precision_position = a.precision_position + b.precision_position - (len - (int)res.length);
-        if (res.length == 0) {
-            return 0;
+        unsigned int precision_sum = a.precision_position + b.precision_position;
+        unsigned int len = (unsigned int)result.length();
+        if (precision_sum == 0) {
+            return inf_float(result);
+        } else if (len > precision_sum) {
+            int pos = -1;
+            for (int i = len - 1; i >= 0; i--) {
+                if (i == precision_sum) {
+                    break;
+                }
+                if (result[i] != '0') {
+                    pos = i;
+                    break;
+                }
+            }
+            if (pos == -1) {
+                pos = precision_sum;
+            }
+            result = result.substr(0, pos);
+            inf_float res(result);
+            res.precision_position = precision_sum - (len - res.length);
+            return res;
         } else {
+            rtrim(result);
+            inf_float res(result);
+            res.precision_position = precision_sum - (len - res.length);
             return res;
         }
     }
