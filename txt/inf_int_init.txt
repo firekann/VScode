@@ -51,7 +51,6 @@ public:
     inf_int(std::string);
     inf_int(const inf_int&);
     ~inf_int();
-    string getstr();
     inf_int& operator=(const inf_int&);
     friend void FFT(std::vector<std::complex<double>>&, bool);
     friend std::pair<inf_int, inf_int> divmod(const inf_int&, const inf_int&);
@@ -81,20 +80,22 @@ public:
     friend inf_int& operator%=(inf_int&, const inf_int&);
     friend inf_int& operator>>=(inf_int&, const inf_int&);
     friend inf_int& operator<<=(inf_int&, const inf_int&);
-    friend inf_int abs(const inf_int&);
     friend std::ostream& operator<<(std::ostream&, const inf_int&);
     friend std::istream& operator>>(std::istream&, inf_int&);
 };
+inf_int abs(const inf_int& n) { return +n; }
+std::string to_string(inf_int& n)
+{
+    std::stringstream str_stream;
+    str_stream << n;
+    return str_stream.str();
+}
 
 int main()
 {
     fastio;
 }
 
-string inf_int::getstr()
-{
-    return this->digits;
-}
 inf_int::inf_int()
 {
     this->digits = "0";
@@ -474,7 +475,6 @@ inf_int& operator<<=(inf_int& a, const inf_int& b)
     a = a << b;
     return a;
 }
-inf_int abs(const inf_int& a) { return +a; }
 std::ostream& operator<<(std::ostream& out, const inf_int& a)
 {
     if (a.thesign == false) {
