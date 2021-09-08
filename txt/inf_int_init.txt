@@ -84,7 +84,7 @@ public:
     friend std::istream& operator>>(std::istream&, inf_int&);
 };
 inf_int abs(const inf_int& n) { return +n; }
-std::string to_string(inf_int& n)
+std::string to_string(const inf_int& n)
 {
     std::stringstream str_stream;
     str_stream << n;
