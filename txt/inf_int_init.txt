@@ -46,11 +46,16 @@ private:
 public:
     inf_int();
     inf_int(int);
+    inf_int(unsigned int);
     inf_int(long long);
+    inf_int(unsigned long long);
     inf_int(const char*);
     inf_int(std::string);
     inf_int(const inf_int&);
     ~inf_int();
+    friend void ltrim(std::string&);
+    friend void rtrim(std::string&);
+    friend void trim(std::string&);
     inf_int& operator=(const inf_int&);
     friend void FFT(std::vector<std::complex<double>>&, bool);
     friend std::pair<inf_int, inf_int> divmod(const inf_int&, const inf_int&);
@@ -94,16 +99,34 @@ std::string to_string(const inf_int& n)
 int main()
 {
     fastio;
+    inf_int a, b;
+    cin >> a >> b;
+    cout << a + b;
 }
 
+void ltrim(std::string& s)
+{
+    s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) { return ((ch == '0' || ch == ' ') ? false : true); }));
+}
+void rtrim(std::string& s)
+{
+    s.erase(find_if(s.rbegin(), s.rend(), [](int ch) { return ((ch == '0' || ch == ' ') ? false : true); }).base(), s.end());
+}
+void trim(std::string& s)
+{
+    rtrim(s);
+    ltrim(s);
+}
 inf_int::inf_int()
 {
     this->digits = "0";
     this->length = 1;
     this->thesign = true;
 }
-inf_int::inf_int(int n) { new (this) inf_int((long long)n); }
+inf_int::inf_int(int n) { new (this) inf_int(std::to_string(n)); }
+inf_int::inf_int(unsigned int n) { new (this) inf_int(std::to_string(n)); }
 inf_int::inf_int(long long n) { new (this) inf_int(std::to_string(n)); }
+inf_int::inf_int(unsigned long long n) { new (this) inf_int(std::to_string(n)); }
 inf_int::inf_int(const char* str) { new (this) inf_int(std::string(str)); }
 inf_int::inf_int(std::string str)
 {
@@ -269,7 +292,7 @@ inf_int operator+(const inf_int& a, const inf_int& b)
             result += (carry + '0');
         }
         reverse(result.begin(), result.end());
-        return inf_int(result);
+        return result;
     } else if (a.thesign == false && b.thesign == false) {
         return -(abs(a) + abs(b));
     } else {
@@ -306,25 +329,15 @@ inf_int operator-(const inf_int& a, const inf_int& b)
             i = '9' - i + '0';
         }
         bb.digits[0]++;
-        reverse(aa.digits.begin(), aa.digits.end());
-        reverse(bb.digits.begin(), bb.digits.end());
+        std::reverse(aa.digits.begin(), aa.digits.end());
+        std::reverse(bb.digits.begin(), bb.digits.end());
         inf_int result(inf_int(aa.digits) + inf_int(bb.digits));
-        result.digits = result.digits.substr(0, result.length);
-        reverse(result.digits.begin(), result.digits.end());
-        result.digits.erase(result.digits.begin());
-        for (int i = 0;;) {
-            if (result.digits[i] == '0') {
-                result.digits.erase(result.digits.begin());
-            } else if (result.digits[i] != '0') {
-                break;
-            }
-        }
-        reverse(result.digits.begin(), result.digits.end());
+        result.digits.erase(result.digits.end() - 1);
+        rtrim(result.digits);
         if (flag) {
             result.thesign = false;
         }
-        result.length = (int)result.digits.length();
-        result.digits.substr(0, result.length);
+        result.length = (unsigned int)result.digits.length();
         return result;
     }
 }
@@ -390,7 +403,7 @@ inf_int operator*(const inf_int& a, const inf_int& b)
                 ans += (r[i] + '0');
             }
         }
-        return inf_int(ans);
+        return ans;
     }
 }
 inf_int operator/(const inf_int& a, const inf_int& b) { return divmod(a, b).first; }
