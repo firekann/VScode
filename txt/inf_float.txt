@@ -77,7 +77,6 @@ std::string to_string(const inf_float& n)
 {
     std::stringstream str_stream;
     str_stream << n;
-
     return str_stream.str();
 }
 
