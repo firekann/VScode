@@ -35,7 +35,9 @@ private:
 public:
     inf_float();
     inf_float(int);
+    inf_float(unsigned int);
     inf_float(long long);
+    inf_float(unsigned long long);
     inf_float(float);
     inf_float(double);
     inf_float(long double);
@@ -75,26 +77,22 @@ std::string to_string(const inf_float& n)
 {
     std::stringstream str_stream;
     str_stream << n;
+
     return str_stream.str();
 }
 
 int main()
 {
     fastio;
-    inf_float a, b;
-    cin >> a >> b;
-    inf_float c = a * b;
-    c.set_output_precision_length(0);
-    cout << c;
 }
 
 void ltrim(std::string& s)
 {
-    s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) { return (ch == '0' ? false : true); }));
+    s.erase(s.begin(), find_if(s.begin(), s.end(), [](int ch) { return ((ch == '0' || ch == ' ') ? false : true); }));
 }
 void rtrim(std::string& s)
 {
-    s.erase(find_if(s.rbegin(), s.rend(), [](int ch) { return (ch == '0' ? false : true); }).base(), s.end());
+    s.erase(find_if(s.rbegin(), s.rend(), [](int ch) { return ((ch == '0' || ch == ' ') ? false : true); }).base(), s.end());
 }
 void trim(std::string& s)
 {
@@ -113,11 +111,13 @@ inf_float::inf_float()
     this->thesign = true;
     this->output_precision_length = -1;
 }
-inf_float::inf_float(int n) { new (this) inf_float(to_string(n)); }
-inf_float::inf_float(long long n) { new (this) inf_float(to_string(n)); }
-inf_float::inf_float(float n) { new (this) inf_float(to_string(n)); }
-inf_float::inf_float(double n) { new (this) inf_float(to_string(n)); }
-inf_float::inf_float(long double n) { new (this) inf_float(to_string(n)); }
+inf_float::inf_float(int n) { new (this) inf_float(std::to_string(n)); }
+inf_float::inf_float(unsigned int n) { new (this) inf_float(std::to_string(n)); }
+inf_float::inf_float(long long n) { new (this) inf_float(std::to_string(n)); }
+inf_float::inf_float(unsigned long long n) { new (this) inf_float(std::to_string(n)); }
+inf_float::inf_float(float n) { new (this) inf_float(std::to_string(n)); }
+inf_float::inf_float(double n) { new (this) inf_float(std::to_string(n)); }
+inf_float::inf_float(long double n) { new (this) inf_float(std::to_string(n)); }
 inf_float::inf_float(const char* str) { new (this) inf_float(std::string(str)); }
 inf_float::inf_float(std::string str)
 {
@@ -220,10 +220,10 @@ bool operator>(const inf_float& a, const inf_float& b)
         return false;
     }
     bool abs = false;
-    if (a.length - a.precision_position > b.length - b.precision_position) {
+    if ((int)a.length - (int)a.precision_position > (int)b.length - (int)b.precision_position) {
         abs = true;
-    } else if (a.length - a.precision_position == b.length - a.precision_position) {
-        int i = a.length;
+    } else if ((int)a.length - (int)a.precision_position == (int)b.length - (int)b.precision_position) {
+        int i = (int)a.length;
         while (i--) {
             int tmp = a.digits[i] - b.digits[i];
             if (tmp == 0) {
@@ -279,7 +279,7 @@ inf_float operator+(const inf_float& a, const inf_float& b)
             result += (carry + '0');
         }
         inf_float res;
-        unsigned int len = (unsigned int)result.length();
+        int len = (int)result.length();
         if (max_precision_position == 0) {
             res.digits = result;
             res.length = len;
@@ -299,12 +299,12 @@ inf_float operator+(const inf_float& a, const inf_float& b)
             }
             result = result.substr(pos);
             res.length = (unsigned int)result.length();
-            res.precision_position = max_precision_position - (len - res.length);
+            res.precision_position = max_precision_position - (len - (int)res.length);
             res.digits = result;
         } else {
             ltrim(result);
             res.length = (unsigned int)result.length();
-            res.precision_position = max_precision_position - (len - res.length);
+            res.precision_position = max_precision_position - (len - (int)res.length);
             res.digits = result;
         }
         return res;
@@ -318,7 +318,6 @@ inf_float operator+(const inf_float& a, const inf_float& b)
 }
 inf_float operator-(const inf_float& a, const inf_float& b)
 {
-    /*
     if (a == b) {
         return 0;
     }
@@ -329,6 +328,7 @@ inf_float operator-(const inf_float& a, const inf_float& b)
     } else if (a.thesign == false && b.thesign == false) {
         return -(abs(a) - abs(b));
     } else if (a.thesign == true && b.thesign == true) {
+        unsigned int max_precision_position = max(a.precision_position, b.precision_position);
         bool flag = false;
         inf_float aa(a);
         inf_float bb(b);
@@ -337,36 +337,66 @@ inf_float operator-(const inf_float& a, const inf_float& b)
             bb = a;
             flag = true;
         }
-        int len = abs((int)(aa.length - bb.length));
-        for (int i = 0; i < len; i++) {
-            bb.digits += '0';
-        }
-        for (auto& i : bb.digits) {
-            i = '9' - i + '0';
-        }
-        bb.digits[0]++;
-        reverse(aa.digits.begin(), aa.digits.end());
-        reverse(bb.digits.begin(), bb.digits.end());
-        inf_float result(inf_float(aa.digits) + inf_float(bb.digits));
-        result.digits = result.digits.substr(0, result.length);
-        reverse(result.digits.begin(), result.digits.end());
-        result.digits.erase(result.digits.begin());
-        for (int i = 0;;) {
-            if (result.digits[i] == '0') {
-                result.digits.erase(result.digits.begin());
-            } else if (result.digits[i] != '0') {
-                break;
+        std::string sa = aa.digits;
+        std::string sb = bb.digits;
+        if (aa.precision_position < bb.precision_position) {
+            for (int i = 0; i < bb.precision_position - aa.precision_position; i++) {
+                sa = '0' + sa;
+            }
+        } else {
+            for (int i = 0; i < aa.precision_position - bb.precision_position; i++) {
+                sb = '0' + sb;
             }
         }
-        reverse(result.digits.begin(), result.digits.end());
-        if (flag) {
-            result.thesign = false;
+        int abs_len = abs((int)((int)sa.length() - (int)sb.length()));
+        for (int i = 0; i < abs_len; i++) {
+            sb += '0';
         }
-        result.length = (int)result.digits.length();
-        result.digits.substr(0, result.length);
-        return result;
+        for (auto& i : sb) {
+            i = '9' - i + '0';
+        }
+        sb[0]++;
+        std::reverse(sa.begin(), sa.end());
+        std::reverse(sb.begin(), sb.end());
+        inf_float result(inf_float(sa) + inf_float(sb));
+        result.digits.erase(result.digits.end() - 1);
+        rtrim(result.digits);
+        std::string tmp = result.digits;
+        rtrim(tmp);
+        inf_float res;
+        if (flag) {
+            res.thesign = false;
+        }
+        int len = (int)tmp.length();
+        if (max_precision_position == 0) {
+            res.digits = tmp;
+            res.length = len;
+        } else if (len > max_precision_position) {
+            int pos = -1;
+            for (int i = 0; i < len; i++) {
+                if (i == max_precision_position) {
+                    break;
+                }
+                if (tmp[i] != '0') {
+                    pos = i;
+                    break;
+                }
+            }
+            if (pos == -1) {
+                pos = max_precision_position;
+            }
+            tmp = tmp.substr(pos);
+            res.length = (unsigned int)tmp.length();
+            res.precision_position = max_precision_position - (len - (int)res.length);
+            res.digits = tmp;
+        } else {
+            ltrim(tmp);
+            res.length = (unsigned int)tmp.length();
+            res.precision_position = max_precision_position - (len - (int)res.length);
+            res.digits = tmp;
+        }
+        return res;
     }
-    */
 }
 inf_float operator*(const inf_float& a, const inf_float& b)
 {
@@ -431,9 +461,9 @@ inf_float operator*(const inf_float& a, const inf_float& b)
             }
         }
         unsigned int precision_sum = a.precision_position + b.precision_position;
-        unsigned int len = (unsigned int)result.length();
+        int len = (int)result.length();
         if (precision_sum == 0) {
-            return inf_float(result);
+            return result;
         } else if (len > precision_sum) {
             int pos = -1;
             for (int i = len - 1; i >= 0; i--) {
@@ -450,12 +480,12 @@ inf_float operator*(const inf_float& a, const inf_float& b)
             }
             result = result.substr(0, pos);
             inf_float res(result);
-            res.precision_position = precision_sum - (len - res.length);
+            res.precision_position = precision_sum - (len - (int)res.length);
             return res;
         } else {
             rtrim(result);
             inf_float res(result);
-            res.precision_position = precision_sum - (len - res.length);
+            res.precision_position = precision_sum - (len - (int)res.length);
             return res;
         }
     }
@@ -511,7 +541,7 @@ std::ostream& operator<<(std::ostream& out, const inf_float& a)
     }
     if (a.output_precision_length == 0) {
         if (a.length > a.precision_position) {
-            for (int i = a.length - 1; i >= (int)a.length - ((int)a.length - (int)a.precision_position); i--) {
+            for (int i = (int)a.length - 1; i >= (int)a.length - ((int)a.length - (int)a.precision_position); i--) {
                 out << a.digits[i];
             }
         } else {
@@ -523,12 +553,12 @@ std::ostream& operator<<(std::ostream& out, const inf_float& a)
         if (a.length <= a.precision_position) {
             is_precision = true;
             out << "0.";
-            for (int i = 0; i < a.precision_position - a.length; i++) {
-                out << '0';
+            for (int i = 0; i < (int)a.precision_position - (int)a.length; i++) {
+                out << "0";
                 cnt++;
             }
         }
-        for (int i = a.length - 1; i >= 0; i--) {
+        for (int i = (int)a.length - 1; i >= 0; i--) {
             if (cnt == a.output_precision_length) {
                 break;
             }
@@ -546,7 +576,7 @@ std::ostream& operator<<(std::ostream& out, const inf_float& a)
         }
         if (a.output_precision_length != -1 && a.precision_position < a.output_precision_length) {
             for (int i = 0; i < a.output_precision_length - (a.precision_position == 0 ? 1 : a.precision_position); i++) {
-                out << '0';
+                out << "0";
             }
         }
     }

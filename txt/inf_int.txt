@@ -99,9 +99,6 @@ std::string to_string(const inf_int& n)
 int main()
 {
     fastio;
-    inf_int a, b;
-    cin >> a >> b;
-    cout << a + b;
 }
 
 void ltrim(std::string& s)
